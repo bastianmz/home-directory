@@ -1,0 +1,24 @@
+#!/bin/bash
+# you need to cd to the dir where the your sub-dirs/files are
+# and then run - ~/m4atomp3.sh
+# required - sudo apt-get install faad id3v2 lame
+for m4afile in *.m4b
+do
+	mp3file="${m4afile%.m4b}.mp3" 	
+	rm /tmp/mp4info
+	echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+	echo "Processing: $m4afile"
+	echo "Extracting tags..."
+	faad -i "$m4afile" 2>  /tmp/mp4info
+	artist=`grep "artist: " /tmp/mp4info | sed -e "s/artist: //g"`
+	album=`grep "album: "   /tmp/mp4info | sed -e "s/album: //g"`
+	title=`grep "title: "   /tmp/mp4info | sed -e "s/title: //g"`
+	year=`grep "date: "     /tmp/mp4info | sed -e "s/date: //g"`
+	track=`grep "track: "   /tmp/mp4info | sed -e "s/track: //g"`
+	genre=`grep "genre: "   /tmp/mp4info | sed -e "s/genre: //g"`
+	echo "Tags: artist=$artist album=$album track=$track title=$title year=$year" 
+	echo "Converting to mp3..." 
+	faad -q -o - "$m4afile" | lame -h -v -b 128 - "$mp3file" 
+	echo "Adding tags..." 
+	id3v2 -a "$artist" -A "$album" -t "$title" -T "$track" -y "$year" "$mp3file"  
+done

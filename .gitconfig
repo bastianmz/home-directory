@@ -1,0 +1,5 @@
+[user]
+	name = David Feilen
+	email = bastian@mezurashii.net
+[core]
+	excludesfile = /home/bastian/.gitexcludes

@@ -1,0 +1,1 @@
+find ~/.home-directory/ -type f -name ".*" -exec ln -s -f {} --target-directory=$HOME \;
